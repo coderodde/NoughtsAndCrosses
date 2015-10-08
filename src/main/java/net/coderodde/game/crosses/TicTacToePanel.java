@@ -518,6 +518,41 @@ public class TicTacToePanel extends JPanel {
                             currentGrid.mark(lastValidCellX,
                                              lastValidCellY,
                                              Mark.X);
+
+                            Mark winner = currentGrid.getWinner();
+
+                            String message = null;
+
+                            if (winner != null) {
+                                if (winner.equals(Mark.O)) {
+                                    // The bot already reported the victory
+                                }
+
+                                message = winner.equals(Mark.X) ? 
+                                        "You won!" : 
+                                        "You lost.";
+
+                            } else if (currentGrid.isFull()) {
+                                message = "It's a tie.";
+                            }
+
+                            if (message != null) {
+                                JOptionPane.showMessageDialog(
+                                        gameFrame, 
+                                        message,
+                                        "Game over",
+                                        JOptionPane.INFORMATION_MESSAGE);
+
+                                gameFrame.setVisible(false);
+                                configurationFrame.setHeight(currentGrid.getHeight());
+                                configurationFrame.setWidth(currentGrid.getWidth());
+                                configurationFrame.setPatternLength(currentGrid.getWinningLength());
+                                configurationFrame.setDepth(maximumDepth);
+                                configurationFrame.setVisible(true);
+                                repaint();
+                                return;
+                            }
+                            
                             repaint();
                             AIThread ai = new AIThread(configurationFrame,
                                                        gameFrame,
@@ -527,38 +562,9 @@ public class TicTacToePanel extends JPanel {
                                                        moveGenerator,
                                                        heuristicFunction,
                                                        maximumDepth);
-
                             ai.start();
                         } catch (Exception ex) {
 
-                        }
-
-                        Mark winner = currentGrid.getWinner();
-
-                        String message = null;
-
-                        if (winner != null) {
-                            message = winner.equals(Mark.X) ? 
-                                    "You won!" : 
-                                    "You lost.";
-
-                        } else if (currentGrid.isFull()) {
-                            message = "It's a tie.";
-                        }
-
-                        if (message != null) {
-                            JOptionPane.showMessageDialog(
-                                    gameFrame, 
-                                    message,
-                                    "Game over",
-                                    JOptionPane.INFORMATION_MESSAGE);
-
-                            gameFrame.setVisible(false);
-                            configurationFrame.setHeight(currentGrid.getHeight());
-                            configurationFrame.setWidth(currentGrid.getWidth());
-                            configurationFrame.setPatternLength(currentGrid.getWinningLength());
-                            configurationFrame.setDepth(maximumDepth);
-                            configurationFrame.setVisible(true);
                         }
                     }
 
