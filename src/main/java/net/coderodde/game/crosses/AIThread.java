@@ -1,5 +1,6 @@
 package net.coderodde.game.crosses;
 
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -51,6 +52,9 @@ class AIThread extends Thread {
         canvas.lock(); // Make sure that the user's clicks do not modify the 
                        // grid.
         progressBar.setValue(0);
+        Dimension dimension = gameFrame.getSize();
+        dimension.height += progressBar.getHeight();
+        gameFrame.setSize(dimension);
         progressBar.setVisible(true);
 
         List<TicTacToeGrid> nextStateList = moveGenerator.generateMoves(grid, 
@@ -130,15 +134,14 @@ class AIThread extends Thread {
                                           "Game over", 
                                           JOptionPane.INFORMATION_MESSAGE);
             gameFrame.setVisible(false);
-            configurationFrame.setHeight(grid.getHeight());
-            configurationFrame.setWidth(grid.getWidth());
-            configurationFrame.setPatternLength(grid.getWinningLength());
-            configurationFrame.setDepth(this.maximumDepth);
             configurationFrame.setVisible(true);
         } else {
             canvas.unlock();
         }
 
+        gameFrame.getSize(dimension);
+        dimension.height -= progressBar.getHeight();
+        gameFrame.setSize(dimension);
         progressBar.setVisible(false);
         canvas.repaint();
     }

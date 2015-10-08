@@ -391,10 +391,6 @@ public class TicTacToePanel extends JPanel {
                             JOptionPane.INFORMATION_MESSAGE);
 
                     gameFrame.setVisible(false);
-                    configurationFrame.setHeight(currentGrid.getHeight());
-                    configurationFrame.setWidth(currentGrid.getWidth());
-                    configurationFrame.setPatternLength(currentGrid.getWinningLength());
-                    configurationFrame.setDepth(maximumDepth);
                     configurationFrame.setVisible(true);
                     return;
                 }
@@ -410,7 +406,7 @@ public class TicTacToePanel extends JPanel {
 
                 ai.start();
             } catch (Exception ex) {
-                return;
+                
             }
         }
     }
@@ -544,10 +540,6 @@ public class TicTacToePanel extends JPanel {
                                         JOptionPane.INFORMATION_MESSAGE);
 
                                 gameFrame.setVisible(false);
-                                configurationFrame.setHeight(currentGrid.getHeight());
-                                configurationFrame.setWidth(currentGrid.getWidth());
-                                configurationFrame.setPatternLength(currentGrid.getWinningLength());
-                                configurationFrame.setDepth(maximumDepth);
                                 configurationFrame.setVisible(true);
                                 repaint();
                                 return;

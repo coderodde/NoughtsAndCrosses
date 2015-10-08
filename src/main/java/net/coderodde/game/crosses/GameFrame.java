@@ -35,11 +35,11 @@ public class GameFrame extends JFrame {
         HeuristicFunction heuristicFunction = new HeuristicFunction();
 
         TicTacToePanel panel = new TicTacToePanel(progressBar,
-                                                    moveGenerator,
-                                                    heuristicFunction,
-                                                    depth,
-                                                    configurationFrame,
-                                                    this);
+                                                  moveGenerator,
+                                                  heuristicFunction,
+                                                  depth,
+                                                  configurationFrame,
+                                                  this);
         panel.setCurrentGrid(grid);
         panel.unlock();
         panel.repaint();
