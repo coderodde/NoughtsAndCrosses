@@ -26,6 +26,7 @@
                 </executions>
                 <configuration>
                     <mainClass>net.coderodde.game.crosses.Application</mainClass>
+                    <arguments></arguments>
                 </configuration>
             </plugin>
         </plugins>
