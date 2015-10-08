@@ -1,7 +1,10 @@
 package net.coderodde.game.crosses;
 
+import java.awt.Point;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This class generates next states from a given state for a particular player.

@@ -22,25 +22,25 @@ import static net.coderodde.game.crosses.Application.centerFrame;
  * @version 1.6 (Oct 8, 2015)
  */
 public class ConfigurationFrame extends JFrame {
-    
+
     private final JTextField heightField;
     private final JTextField widthField;
     private final JTextField patternLengthField;
     private final JTextField depthField;
-    
+
     private final JLabel heightLabel;
     private final JLabel widthLabel;
     private final JLabel patternLengthLabel;
     private final JLabel depthLabel;
-    
+
     private final JButton startGameButton;
-    
+
     private final GameFrame gameFrame;
-    
+
     public ConfigurationFrame() {
         this(5, 5, 4, 5);
     }
-    
+
     public ConfigurationFrame(int height, 
                               int width, 
                               int patternLength, 
@@ -55,45 +55,45 @@ public class ConfigurationFrame extends JFrame {
         this.patternLengthLabel = new JLabel("Winning pattern length");
         this.depthLabel         = new JLabel("AI depth");
         this.startGameButton    = new JButton("Start");
-        
+
         this.gameFrame = new GameFrame(this);
-        
+
         Border labelBorder = new EmptyBorder(0, 10, 0, 10);
-        
+
         heightLabel       .setBorder(labelBorder);
         widthLabel        .setBorder(labelBorder);
         patternLengthLabel.setBorder(labelBorder);
         depthLabel.        setBorder(labelBorder);
-        
+
         Border panelBorder = BorderFactory.createLineBorder(Color.RED);
-        
+
         JPanel heightPanel        = new JPanel();
         JPanel widthPanel         = new JPanel();
         JPanel patternLengthPanel = new JPanel();
         JPanel depthPanel         = new JPanel();
-        
+
         heightPanel        .setBorder(panelBorder);
         widthPanel         .setBorder(panelBorder);
         patternLengthPanel .setBorder(panelBorder);
         depthPanel         .setBorder(panelBorder);
-        
+
         heightPanel        .setLayout(new GridLayout(1, 2));
         widthPanel         .setLayout(new GridLayout(1, 2));
         patternLengthPanel .setLayout(new GridLayout(1, 2));
         depthPanel         .setLayout(new GridLayout(1, 2));
-        
+
         heightPanel.add(heightLabel);
         heightPanel.add(heightField);
-        
+
         widthPanel.add(widthLabel);
         widthPanel.add(widthField);
-        
+
         patternLengthPanel.add(patternLengthLabel);
         patternLengthPanel.add(patternLengthField);
-        
+
         depthPanel.add(depthLabel);
         depthPanel.add(depthField);
-       
+
         getContentPane().setLayout(new GridLayout(5, 1, 20, 10));
 
         getContentPane().add(heightPanel);
@@ -101,15 +101,15 @@ public class ConfigurationFrame extends JFrame {
         getContentPane().add(patternLengthPanel);
         getContentPane().add(depthPanel);
         getContentPane().add(startGameButton);
-        
+
         StartButtonActionListener startButtonActionListener = 
                 new StartButtonActionListener(heightField,
                                               widthField,
                                               patternLengthField,
                                               depthField);
-        
+
         startGameButton.addActionListener(startButtonActionListener);
-        
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
         centerFrame(this);
@@ -117,32 +117,32 @@ public class ConfigurationFrame extends JFrame {
         startGameButton.requestFocus();
         setVisible(true);
     }
-    
+
     public void setHeight(int height) {
         this.heightField.setText("" + height);
     }
-    
+
     public void setWidth(int width) {
         this.widthField.setText("" + width);
     }
-    
+
     public void setPatternLength(int patternLength) {
         this.patternLengthField.setText("" + patternLength);
     }
-    
+
     public void setDepth(int depth) {
         this.depthField.setText("" + depth);
     }
-    
+
     private class StartButtonActionListener implements ActionListener {
 
         private final JTextField heightField;
         private final JTextField widthField;
         private final JTextField patternLengthField;
         private final JTextField depthField;
-        
+
         private TicTacToeGrid resultGrid;
-        
+
         StartButtonActionListener(JTextField heightField,
                                   JTextField widthField,
                                   JTextField patternLengthField,
@@ -152,13 +152,13 @@ public class ConfigurationFrame extends JFrame {
             this.patternLengthField = patternLengthField;
             this.depthField         = depthField;
         }
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             resultGrid = null;
-            
+
             String stmp = heightField.getText().trim();
-            
+
             if (stmp.isEmpty()) {
                 JOptionPane.showMessageDialog(
                         ConfigurationFrame.this,
@@ -167,9 +167,9 @@ public class ConfigurationFrame extends JFrame {
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            
+
             int height;
-            
+
             try {
                 height = Integer.parseInt(stmp);
             } catch (NumberFormatException ex) {
@@ -180,9 +180,9 @@ public class ConfigurationFrame extends JFrame {
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            
+
             stmp = widthField.getText().trim();
-            
+
             if (stmp.isEmpty()) {
                 JOptionPane.showMessageDialog(
                         ConfigurationFrame.this,
@@ -191,9 +191,9 @@ public class ConfigurationFrame extends JFrame {
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            
+
             int width;
-            
+
             try {
                 width = Integer.parseInt(stmp);
             } catch (NumberFormatException ex) {
@@ -204,9 +204,9 @@ public class ConfigurationFrame extends JFrame {
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            
+
             stmp = patternLengthField.getText().trim();
-            
+
             if (stmp.isEmpty()) {
                 JOptionPane.showMessageDialog(
                         ConfigurationFrame.this,
@@ -215,9 +215,9 @@ public class ConfigurationFrame extends JFrame {
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            
+
             int patternLength;
-            
+
             try {
                 patternLength = Integer.parseInt(stmp);
             } catch (NumberFormatException ex) {
@@ -228,9 +228,9 @@ public class ConfigurationFrame extends JFrame {
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            
+
             stmp = depthField.getText().trim();
-            
+
             if (stmp.isEmpty()) {
                 JOptionPane.showMessageDialog(
                         ConfigurationFrame.this,
@@ -239,9 +239,9 @@ public class ConfigurationFrame extends JFrame {
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            
+
             int depth;
-            
+
             try {
                 depth = Integer.parseInt(stmp);
             } catch (NumberFormatException ex) {
@@ -252,7 +252,7 @@ public class ConfigurationFrame extends JFrame {
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            
+
             try {
               resultGrid = new TicTacToeGrid(height, width, patternLength); 
             } catch (Exception ex) {
@@ -263,7 +263,7 @@ public class ConfigurationFrame extends JFrame {
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            
+
             ConfigurationFrame.this.setVisible(false);
             gameFrame.startGame(resultGrid, depth);
             gameFrame.setVisible(true);

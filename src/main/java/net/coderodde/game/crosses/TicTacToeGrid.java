@@ -93,111 +93,111 @@ public class TicTacToeGrid {
         int width = getWidth();
         int height = getHeight();
         int patternLength = getWinningLength();
-        
+
         // Check diagonal patterns from top-left to bottom-right.
         for (int y = 0; y <= height - patternLength; ++y) {
             label1:
             for (int x = 0; x <= width - patternLength; ++x) {
                 Mark mark = read(x, y);
-                
+
                 if (mark == null) {
                     continue;
                 }
-                
+
                 for (int i = 1; i < patternLength; ++i) {
                     if (read(x + i, y + i) != mark) {
                         continue label1;
                     }
                 }
-                
+
                 return mark;
             }
         }
-        
+
         // Check diagonal patterns from top-right to bottom-left.
         for (int y = 0; y <= height - patternLength; ++y) {
             label2:
             for (int x = patternLength - 1; x < width; ++x) {
                 Mark mark = read(x, y);
-                
+
                 if (mark == null) {
                     continue;
                 }
-                
+
                 for (int i = 1; i < patternLength; ++i) {
                     if (read(x - i, y + i) != mark) {
                         continue label2;
                     }
                 }
-                
+
                 return mark;
             }
         }
-        
+
         // Check vertical patterns.
         for (int y = 0; y <= height - patternLength; ++y) {
             label3:
             for (int x = 0; x < width; ++x) {
                 Mark mark = read(x, y);
-                
+
                 if (mark == null) {
                     continue;
                 }
-                
+
                 for (int i = 1; i < patternLength; ++i) {
                     if (read(x, y + i) != mark) {
                         continue label3;
                     }
                 }
-                
+
                 return mark;
             }
         }
-        
+
         // Check horizontal patterns.
         for (int y = 0; y < height; ++y) {
             label4:
             for (int x = 0; x <= width - patternLength; ++x) {
                 Mark mark = read(x, y);
-                
+
                 if (mark == null) {
                     continue;
                 }
-                
+
                 for (int i = 1; i < patternLength; ++i) {
                     if (read(x + i, y) != mark) {
                         continue label4;
                     }
                 }
-                
+
                 return mark;
             }
         }
-        
+
         // No winner yet.
         return null;
     }
-    
+
     public void set(TicTacToeGrid other) {
         if (getWidth() != other.getWidth()) {
             throw new IllegalArgumentException(
                     "Width mismatch: copying " + other.getWidth() + 
                     " columns to " + this.getWidth());
         }
-        
+
         if (getHeight() != other.getHeight()) {
             throw new IllegalArgumentException(
                     "Height mismatch: copying " + other.getHeight() +
                     " rows to " + this.getHeight());
         }
-        
+
         for (int y = 0; y < getHeight(); ++y) {
             for (int x = 0; x < getWidth(); ++x) {
                 this.grid[y][x] = other.grid[y][x];
             }
         }
     }
-    
+
     @Override
     public String toString() {
         int width = grid[0].length;

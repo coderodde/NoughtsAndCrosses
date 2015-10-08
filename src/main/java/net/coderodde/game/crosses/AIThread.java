@@ -16,9 +16,9 @@ import javax.swing.JProgressBar;
  * @version 1.6 (Oct 7, 2015)
  */
 class AIThread extends Thread {
-   
+
     private static final double LARGE = 1e10;
-    
+
     private final ConfigurationFrame configurationFrame;
     private final GameFrame gameFrame;
     private final JProgressBar progressBar;
@@ -27,7 +27,7 @@ class AIThread extends Thread {
     private final MoveGenerator moveGenerator;
     private final HeuristicFunction heuristicFunction;
     private final int maximumDepth;
-    
+
     AIThread(ConfigurationFrame configurationFrame,
              GameFrame gameFrame,
              TicTacToeGrid grid, 
@@ -45,14 +45,14 @@ class AIThread extends Thread {
         this.heuristicFunction = heuristicFunction;
         this.maximumDepth = maximumDepth;
     }
-    
+
     @Override
     public void run() {
         canvas.lock(); // Make sure that the user's clicks do not modify the 
                        // grid.
         progressBar.setValue(0);
         progressBar.setVisible(true);
-        
+
         List<TicTacToeGrid> nextStateList = moveGenerator.generateMoves(grid, 
                                                                         Mark.O);
         if (nextStateList.isEmpty()) {
@@ -60,25 +60,25 @@ class AIThread extends Thread {
         }
 
         progressBar.setMaximum(nextStateList.size());
-        
+
         int cores = Runtime.getRuntime().availableProcessors();
         List<List<TicTacToeGrid>> workItemLists = new ArrayList<>(cores);
         int workItemListCapacity = nextStateList.size() / cores + 1;
-        
+
         for (int i = 0; i < cores; ++i) {
             workItemLists.add(new ArrayList<TicTacToeGrid>
                              (workItemListCapacity));
         }
-        
+
         // Distribute the work items.
         for (int i = 0; i < nextStateList.size(); ++i) {
             workItemLists.get(i % cores).add(nextStateList.get(i));
         }
-        
+
         long startTime = System.currentTimeMillis();
 
         WorkerThread[] threads = new WorkerThread[cores];
-        
+
         for (int i = 0; i < cores; ++i) {
             threads[i] = new WorkerThread(workItemLists.get(i),
                                           moveGenerator,
@@ -86,35 +86,35 @@ class AIThread extends Thread {
                                           maximumDepth,
                                           progressBar);
         }
-        
+
         for (int i = 0; i < cores; ++i) {
             threads[i].start();
         }
-        
+
         for (int i = 0; i < cores; ++i) {
             try {
                 threads[i].join();
             } catch (InterruptedException ex) {
-                
+
             }
         }
-        
+
         long endTime = System.currentTimeMillis();
         System.out.println("Computation took " + (endTime - startTime) +
                            " milliseconds.");
 
         TicTacToeGrid bestState = threads[0].getBestState();
         double bestValue = threads[0].getBestValue();
-        
+
         for (WorkerThread wt : threads) {
             if (bestValue > wt.getBestValue()) {
                 bestValue = wt.getBestValue();
                 bestState = wt.getBestState();
             }
         }
-        
+
         grid.set(bestState);
-        
+
         Mark winner = grid.getWinner();
         String message = null;
 
@@ -138,13 +138,13 @@ class AIThread extends Thread {
         } else {
             canvas.unlock();
         }
-        
+
         progressBar.setVisible(false);
         canvas.repaint();
     }
-    
+
     private static final class WorkerThread extends Thread {
-        
+
         private final List<TicTacToeGrid> workItemList;
         private final MoveGenerator       moveGenerator;
         private final HeuristicFunction   heuristicFunction;
@@ -152,7 +152,7 @@ class AIThread extends Thread {
         private final JProgressBar        progressBar;
         private TicTacToeGrid             bestState;
         private double                    bestValue;
-        
+
         WorkerThread(List<TicTacToeGrid> workItemList,
                      MoveGenerator moveGenerator,
                      HeuristicFunction heuristicFunction,
@@ -164,11 +164,11 @@ class AIThread extends Thread {
             this.maximumDepth = maximumDepth;
             this.progressBar = progressBar;
         }
-        
+
         @Override
         public void run() {
             bestValue = Double.POSITIVE_INFINITY;
-            
+
             for (TicTacToeGrid s : workItemList) {
                 double value = alphabeta(s, maximumDepth);
 
@@ -180,15 +180,15 @@ class AIThread extends Thread {
                 progressBar.setValue(progressBar.getValue() + 1);
             }
         }
-        
+
         double getBestValue() {
             return bestValue;
         }
-        
+
         TicTacToeGrid getBestState() {
             return bestState;
         }
-        
+
         private double alphabeta(TicTacToeGrid node, 
                                  int depth, 
                                  double alpha, 
@@ -259,7 +259,7 @@ class AIThread extends Thread {
                              Double.MAX_VALUE, 
                              Mark.X);
         }
-        
+
         private final class ChildComparator 
         implements Comparator<TicTacToeGrid> {
 
