@@ -1,5 +1,6 @@
 package net.coderodde.game.crosses;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import javax.swing.JFrame;
@@ -13,11 +14,12 @@ import static net.coderodde.game.crosses.Application.centerFrame;
  * @author Rodion "rodde" Efremov
  * @version 1.6 (Oct 8, 2015)
  */
-public class GameFrame extends JFrame {
+public class GameFrame extends JFrame implements AIProgressListener {
 
     private final JProgressBar progressBar;
     private final ConfigurationFrame configurationFrame;
-
+    private TicTacToePanel gamePanel;
+    
     public GameFrame(ConfigurationFrame configurationFrame) {
         this.progressBar = new JProgressBar();
         this.configurationFrame = configurationFrame;
@@ -34,15 +36,15 @@ public class GameFrame extends JFrame {
         MoveGenerator moveGenerator = new MoveGenerator();
         HeuristicFunction heuristicFunction = new HeuristicFunction();
 
-        TicTacToePanel panel = new TicTacToePanel(progressBar,
+        gamePanel = new TicTacToePanel(progressBar,
                                                   moveGenerator,
                                                   heuristicFunction,
                                                   depth,
                                                   configurationFrame,
                                                   this);
-        panel.setCurrentGrid(grid);
-        panel.unlock();
-        panel.repaint();
+        gamePanel.setCurrentGrid(grid);
+        gamePanel.unlock();
+        gamePanel.repaint();
 
         GridBagConstraints c = new GridBagConstraints();
 
@@ -52,7 +54,7 @@ public class GameFrame extends JFrame {
         c.weightx = 1.0;
         c.weighty = 1.0;
 
-        getContentPane().add(panel, c);
+        getContentPane().add(gamePanel, c);
 
         c = new GridBagConstraints();
 
@@ -64,9 +66,35 @@ public class GameFrame extends JFrame {
 
         getContentPane().add(progressBar, c);
 
-        setMinimumSize(panel.getMinimumSize());
+        setMinimumSize(gamePanel.getMinimumSize());
 
         centerFrame(this);
         pack();
+    }
+
+    @Override
+    public void start(int totalProgressTokens) {
+        progressBar.setMaximum(totalProgressTokens);
+        progressBar.setValue(0);
+        
+        Dimension dimension = getSize();
+        dimension.height += progressBar.getHeight();
+        setSize(dimension);
+        
+        progressBar.setVisible(true);
+    }
+
+    @Override
+    public void increment() {
+        progressBar.setValue(progressBar.getValue() + 1);
+    }
+
+    @Override
+    public void done() {
+        Dimension dimension = getSize();
+        dimension.height -= progressBar.getHeight();
+        setSize(dimension);
+        
+        progressBar.setVisible(false);
     }
 }

@@ -32,7 +32,6 @@ public class TicTacToePanel extends JPanel {
                                                       Font.BOLD, 
                                                       50);
 
-    private final JProgressBar       progressBar;
     private final MoveGenerator      moveGenerator;
     private final HeuristicFunction  heuristicFunction;
     private final int                maximumDepth;
@@ -72,7 +71,6 @@ public class TicTacToePanel extends JPanel {
                           int maximumDepth,
                           ConfigurationFrame configurationFrame,
                           GameFrame gameFrame) {
-        this.progressBar = progressBar;
         this.moveGenerator = moveGenerator;
         this.heuristicFunction = heuristicFunction;
         this.maximumDepth = maximumDepth;
@@ -398,9 +396,9 @@ public class TicTacToePanel extends JPanel {
                 
                 AIWorker ai = new AIWorker(configurationFrame,
                                            gameFrame,
+                                           gameFrame,
                                            currentGrid,
                                            this,
-                                           progressBar,
                                            moveGenerator,
                                            heuristicFunction,
                                            maximumDepth);
@@ -546,9 +544,9 @@ public class TicTacToePanel extends JPanel {
                             repaint();
                             AIWorker ai = new AIWorker(configurationFrame,
                                                        gameFrame,
-                                                       TicTacToePanel.this.currentGrid,
+                                                       gameFrame,
+                                                       currentGrid,
                                                        TicTacToePanel.this,
-                                                       progressBar,
                                                        moveGenerator,
                                                        heuristicFunction,
                                                        maximumDepth);

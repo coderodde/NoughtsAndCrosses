@@ -1,6 +1,5 @@
 package net.coderodde.game.crosses;
 
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -12,7 +11,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import javax.swing.JOptionPane;
-import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 
 /**
@@ -27,7 +25,7 @@ class AIWorker extends SwingWorker<TicTacToeGrid, Void> {
 
     private final ConfigurationFrame configurationFrame;
     private final GameFrame gameFrame;
-    private final JProgressBar progressBar;
+    private final AIProgressListener progressListener;
     private final TicTacToeGrid grid;
     private final TicTacToePanel canvas;
     private final MoveGenerator moveGenerator;
@@ -36,17 +34,17 @@ class AIWorker extends SwingWorker<TicTacToeGrid, Void> {
 
     AIWorker(ConfigurationFrame configurationFrame,
              GameFrame gameFrame,
+             AIProgressListener progressListener,
              TicTacToeGrid grid, 
              TicTacToePanel canvas,
-             JProgressBar progressBar,
              MoveGenerator moveGenerator,
              HeuristicFunction heuristicFunction,
              int maximumDepth) {
         this.configurationFrame = configurationFrame;
         this.gameFrame = gameFrame;
+        this.progressListener = progressListener;
         this.grid = grid;
         this.canvas = canvas;
-        this.progressBar = progressBar; 
         this.moveGenerator = moveGenerator;
         this.heuristicFunction = heuristicFunction;
         this.maximumDepth = maximumDepth;
@@ -56,11 +54,6 @@ class AIWorker extends SwingWorker<TicTacToeGrid, Void> {
     protected TicTacToeGrid doInBackground() throws Exception {
         canvas.lock(); // Make sure that the user's clicks do not modify the 
                        // grid.
-        progressBar.setValue(0);
-        Dimension dimension = gameFrame.getSize();
-        dimension.height += progressBar.getHeight();
-        gameFrame.setSize(dimension);
-        progressBar.setVisible(true);
 
         List<TicTacToeGrid> nextStateList = moveGenerator.generateMoves(grid, 
                                                                         Mark.O);
@@ -68,7 +61,7 @@ class AIWorker extends SwingWorker<TicTacToeGrid, Void> {
             return null;
         }
 
-        progressBar.setMaximum(nextStateList.size());
+        progressListener.start(nextStateList.size());
 
         List<WorkerCallable> callableList = 
                 new ArrayList<>(nextStateList.size());
@@ -78,7 +71,7 @@ class AIWorker extends SwingWorker<TicTacToeGrid, Void> {
                                                 moveGenerator,
                                                 heuristicFunction,
                                                 maximumDepth,
-                                                progressBar));
+                                                progressListener));
         }
         
         TicTacToeGrid bestState = null;
@@ -135,11 +128,7 @@ class AIWorker extends SwingWorker<TicTacToeGrid, Void> {
     
     @Override
     protected void done() {
-        Dimension dimension = new Dimension();
-        gameFrame.getSize(dimension);
-        dimension.height -= progressBar.getHeight();
-        gameFrame.setSize(dimension);
-        progressBar.setVisible(false);
+        progressListener.done();
         canvas.repaint();
         canvas.unlock();
     }
@@ -156,18 +145,18 @@ class AIWorker extends SwingWorker<TicTacToeGrid, Void> {
         private final MoveGenerator       moveGenerator;
         private final HeuristicFunction   heuristicFunction;
         private final int                 maximumDepth;
-        private final JProgressBar        progressBar;
+        private final AIProgressListener  progressListener;
 
         WorkerCallable(TicTacToeGrid state,
                        MoveGenerator moveGenerator,
                        HeuristicFunction heuristicFunction,
                        int maximumDepth,
-                       JProgressBar progressBar) {
+                       AIProgressListener progressListener) {
             this.state = state;
             this.moveGenerator = moveGenerator;
             this.heuristicFunction = heuristicFunction;
             this.maximumDepth = maximumDepth;
-            this.progressBar = progressBar;
+            this.progressListener = progressListener;
         }
 
         @Override
@@ -175,7 +164,7 @@ class AIWorker extends SwingWorker<TicTacToeGrid, Void> {
             WorkerCallableResult result = new WorkerCallableResult();
             result.bestValue = alphabeta(state, maximumDepth);
             result.bestState = state;
-            progressBar.setValue(progressBar.getValue() + 1);
+            progressListener.increment();
             return result;
         }
 
