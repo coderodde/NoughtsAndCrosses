@@ -367,6 +367,7 @@ public class TicTacToePanel extends JPanel {
         if (p.x >= 0 && p.x < currentGrid.getWidth() 
                 && p.y >= 0 && p.y < currentGrid.getHeight()) {
             try {
+                lock();
                 currentGrid.mark(p.x, p.y, Mark.X);
                 
                 repaint();
@@ -395,7 +396,7 @@ public class TicTacToePanel extends JPanel {
                     return;
                 }
                 
-                AIThread ai = new AIThread(configurationFrame,
+                AIWorker ai = new AIWorker(configurationFrame,
                                            gameFrame,
                                            currentGrid,
                                            this,
@@ -404,7 +405,7 @@ public class TicTacToePanel extends JPanel {
                                            heuristicFunction,
                                            maximumDepth);
 
-                ai.start();
+                ai.execute();
             } catch (Exception ex) {
                 
             }
@@ -511,6 +512,7 @@ public class TicTacToePanel extends JPanel {
                     if (!lock) {
                         // Try mark.
                         try {
+                            lock();
                             currentGrid.mark(lastValidCellX,
                                              lastValidCellY,
                                              Mark.X);
@@ -520,10 +522,6 @@ public class TicTacToePanel extends JPanel {
                             String message = null;
 
                             if (winner != null) {
-                                if (winner.equals(Mark.O)) {
-                                    // The bot already reported the victory
-                                }
-
                                 message = winner.equals(Mark.X) ? 
                                         "You won!" : 
                                         "You lost.";
@@ -546,7 +544,7 @@ public class TicTacToePanel extends JPanel {
                             }
                             
                             repaint();
-                            AIThread ai = new AIThread(configurationFrame,
+                            AIWorker ai = new AIWorker(configurationFrame,
                                                        gameFrame,
                                                        TicTacToePanel.this.currentGrid,
                                                        TicTacToePanel.this,
@@ -554,9 +552,9 @@ public class TicTacToePanel extends JPanel {
                                                        moveGenerator,
                                                        heuristicFunction,
                                                        maximumDepth);
-                            ai.start();
+                            ai.execute();
                         } catch (Exception ex) {
-
+                            unlock();
                         }
                     }
 
